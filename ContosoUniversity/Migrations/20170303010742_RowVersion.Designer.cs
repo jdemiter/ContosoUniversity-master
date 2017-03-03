@@ -8,9 +8,10 @@ using ContosoUniversity.Data;
 namespace ContosoUniversity.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20170303010742_RowVersion")]
+    partial class RowVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -62,10 +63,6 @@ namespace ContosoUniversity.Migrations
                     b.Property<string>("Name")
                         .HasAnnotation("MaxLength", 50);
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
                     b.Property<DateTime>("StartDate");
 
                     b.HasKey("DepartmentID");
@@ -95,6 +92,27 @@ namespace ContosoUniversity.Migrations
                     b.ToTable("Enrollment");
                 });
 
+            modelBuilder.Entity("ContosoUniversity.Models.Instructor", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FirstMidName")
+                        .IsRequired()
+                        .HasColumnName("FirstName")
+                        .HasAnnotation("MaxLength", 50);
+
+                    b.Property<DateTime>("HireDate");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 50);
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Instructor");
+                });
+
             modelBuilder.Entity("ContosoUniversity.Models.OfficeAssignment", b =>
                 {
                     b.Property<int>("InstructorID");
@@ -110,17 +128,15 @@ namespace ContosoUniversity.Migrations
                     b.ToTable("OfficeAssignment");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Models.person", b =>
+            modelBuilder.Entity("ContosoUniversity.Models.Student", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
+                    b.Property<DateTime>("EnrollmentDate");
 
-                    b.Property<string>("FirstMidName")
+                    b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnName("FirstName")
                         .HasAnnotation("MaxLength", 50);
 
                     b.Property<string>("LastName")
@@ -129,31 +145,7 @@ namespace ContosoUniversity.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Person");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("person");
-                });
-
-            modelBuilder.Entity("ContosoUniversity.Models.Instructor", b =>
-                {
-                    b.HasBaseType("ContosoUniversity.Models.person");
-
-                    b.Property<DateTime>("HireDate");
-
-                    b.ToTable("Instructor");
-
-                    b.HasDiscriminator().HasValue("Instructor");
-                });
-
-            modelBuilder.Entity("ContosoUniversity.Models.Student", b =>
-                {
-                    b.HasBaseType("ContosoUniversity.Models.person");
-
-                    b.Property<DateTime>("EnrollmentDate");
-
                     b.ToTable("Student");
-
-                    b.HasDiscriminator().HasValue("Student");
                 });
 
             modelBuilder.Entity("ContosoUniversity.Models.Course", b =>
