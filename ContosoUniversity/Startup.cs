@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using ContosoUniversity.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ContosoUniversity
 {
@@ -47,10 +48,14 @@ namespace ContosoUniversity
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDbContext<SchoolContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -59,6 +64,35 @@ namespace ContosoUniversity
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                //Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+
+                //Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+
+                //Cookie settings
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
+                options.Cookies.ApplicationCookie.LoginPath = "/Account/Login";
+                options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOff";
+
+                //User settings
+                options.User.RequireUniqueEmail = true;
+
+            });
+
+           //services.Configure<MvcOptions>(options =>
+           // {
+           //     options.Filters.Add(new RequireHttpsAttribute());
+           // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
