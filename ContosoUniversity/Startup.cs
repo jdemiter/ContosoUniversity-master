@@ -61,6 +61,12 @@ namespace ContosoUniversity
 
             services.AddMvc();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrator",policy =>
+                policy.RequireRole("Administrator"));
+            });
+
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
@@ -121,6 +127,11 @@ namespace ContosoUniversity
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            app.UseGoogleAuthentication(new GoogleOptions()
+            {
+                ClientId = Configuration["Authentication:Google:ClientID"],
+                ClientSecret = Configuration["Authentication:Google:ClientSecret"]
+            });
 
             app.UseMvc(routes =>
             {

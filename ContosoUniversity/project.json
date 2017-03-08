@@ -1,4 +1,4 @@
-﻿{
+{
 
   "webroot":  "wwwroot", 
   "userSecretsId": "aspnet-ContosoUniversity-a588e000-5191-4db6-abaf-f451b3f3254d",
@@ -47,7 +47,8 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "SendGrid.NetCore": "1.0.0-rtm-00002"
+    "SendGrid.NetCore": "1.0.0-rtm-00002",
+    "Microsoft.AspNetCore.Authentication.Google": "1.1.1"
   },
 
   "tools": {

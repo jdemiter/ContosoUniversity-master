@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Controllers
 {
-    
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly SchoolContext _context;
@@ -87,6 +88,7 @@ namespace ContosoUniversity.Controllers
             return View(student);
         }
 
+        [Authorize(Roles ="Administrator")]
         // GET: Students/Create
         public IActionResult Create()
         {
